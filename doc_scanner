@@ -1,0 +1,39 @@
+import cv2
+import numpy as np
+
+
+def resizeImage(img, ratio):
+    colones, lines, colours = img.shape
+    newSize = (int(lines * ratio / 100), int(colones * ratio / 100))
+    newImg = cv2.resize(img, newSize)
+    return newImg
+
+
+imageOriginale = cv2.imread("Attestation.jpg")
+ratio = 35
+imgResize = resizeImage(imageOriginale, ratio)
+imgResizeToGray = cv2.cvtColor(imgResize, cv2.COLOR_BGR2GRAY)
+ThresholdMin = 100
+ThresholdMax = 200
+imgResizeToGrayBlur = cv2.GaussianBlur(imgResizeToGray, (3, 3), 0)
+imagethreshold = cv2.Canny(imgResizeToGray, ThresholdMin, ThresholdMax)
+cv2.imshow("mon image", imagethreshold)
+imagethresholdGrayBlur = cv2.Canny(imgResizeToGrayBlur, ThresholdMin, ThresholdMax)
+
+ImgDilate = cv2.dilate(imagethreshold,)
+
+
+ContoursImg = imagethreshold.copy()
+image,contours , hierarchy = cv2.findContours(ContoursImg , cv2.RETR_EXTERNAL , cv2.CHAIN_APPROX_NONE)
+cv2.drawContours(ContoursImg,contours,-1 ,(0,255,0),3)
+
+cv2.imshow("my image original ", imgResize)
+cv2.imshow("my image en gris", imgResizeToGray)
+cv2.imshow("my image Extract", imgResizeToGrayBlur)
+cv2.imshow("my image en gris et blur", imagethresholdGrayBlur)
+cv2.imshow("CountoursImg" , ContoursImg)
+
+while True:
+    key = cv2.waitKey(1)
+    if key == 27: break
+cv2.destroyAllWindows()
